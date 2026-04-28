@@ -10,7 +10,7 @@
 [![C2PA v1.3](https://img.shields.io/badge/C2PA-v1.3-blueviolet)](https://c2pa.org/)
 [![IEEE Paper](https://img.shields.io/badge/Paper-IEEE%20Submission-00629B)](docs/)
 
-*Deepfakes do not simply need to be detected — they need to be governed. VidShield does both.*
+*Deepfakes do not simply need to be detected, they need to be governed. VidShield does both.*
 
 </div>
 
@@ -18,9 +18,9 @@
 
 ## The Problem We Set Out to Solve
 
-Deepfake videos have crossed from novelty to genuine threat. Fabricated statements by public officials, non-consensual synthetic imagery, and AI-forged corporate communications are no longer theoretical concerns — they are documented, recurring events. What made this project genuinely challenging was the realization that detection alone is not enough. A deepfake detector can classify a video, but the moment it is wrong (and at scale, it will be wrong), there is no forensic trail, no ownership record, and no way to prove what happened to a frame between creation and distribution.
+Deepfake videos have crossed from novelty to genuine threat. Fabricated statements by public officials, non-consensual synthetic imagery, and AI-forged corporate communications are no longer theoretical concerns they are documented, recurring events. What made this project genuinely challenging was the realization that detection alone is not enough. A deepfake detector can classify a video, but the moment it is wrong (and at scale, it will be wrong), there is no forensic trail, no ownership record, and no way to prove what happened to a frame between creation and distribution.
 
-VidShield was designed around this gap. It is a dual-component framework that approaches synthetic video governance from both ends: detecting forgeries through a domain-adaptive temporal vision transformer, and protecting authentic frames through a three-layer provenance architecture. Neither component was built in isolation from the other — together they establish a practical foundation for real-world synthetic media governance.
+VidShield was designed around this gap. It is a dual-component framework that approaches synthetic video governance from both ends: detecting forgeries through a domain-adaptive temporal vision transformer, and protecting authentic frames through a three-layer provenance architecture. Neither component was built in isolation from the other together they establish a practical foundation for real-world synthetic media governance.
 
 ---
 
@@ -43,7 +43,7 @@ VidShield was designed around this gap. It is a dual-component framework that ap
 
 The detection component is built around a **Video Swin Transformer Small (VST-S)** pretrained on Kinetics-400, fine-tuned on a joint corpus from **DFDC** and **DeeperForensics-1.0** under strict identity-disjoint splits. To prevent the model from memorising dataset-specific compression artifacts, a **Gradient Reversal Layer (GRL)** is added as an adversarial branch that forces the backbone to learn domain-invariant forgery cues.
 
-This was not the first model we trained. We started with a **ConvNeXt-tiny CNN spatial baseline** — a disciplined first step that taught us quickly where purely spatial, frame-level features fall short. The shift to a temporal transformer backbone was driven by that failure analysis. The video swin model sees sequences, not snapshots, and that makes all the difference.
+This was not the first model we trained. We started with a **ConvNeXt-tiny CNN spatial baseline**, a disciplined first step that taught us quickly where purely spatial, frame-level features fall short. The shift to a temporal transformer backbone was driven by that failure analysis. The video swin model sees sequences, not snapshots, and that makes all the difference.
 
 ### Protection
 
@@ -147,7 +147,7 @@ Each component has a `v1_` and `v2_` folder. This is intentional. Research proje
 ### Installation
 
 ```bash
-git clone https://github.com/your-username/VidShield.git
+git clone https://github.com/adityar9764/VidShield.git
 cd VidShield
 
 # Create a conda environment (recommended)
@@ -192,7 +192,7 @@ For the protection pipeline's UAP pattern (also a trained artifact), the pre-tra
 
 ## Training the Detector
 
-All detection experiments are notebook-driven. Open the relevant notebook and run cells top-to-bottom — dataset paths are configured in the first cell.
+All detection experiments are notebook-driven. Open the relevant notebook and run cells top-to-bottom dataset paths are configured in the first cell.
 
 ```
 # Phase 2: Video Swin Transformer + GRL (recommended)
@@ -336,7 +336,7 @@ The NRS evaluation suite covers 8 corruption scenarios:
 
 We believe reproducibility includes being honest about where a system falls short.
 
-**On detection:** The cross-dataset evaluation on Celeb-DF-v2 returns AUC = 0.5415 — effectively near-random. The model predominantly predicts "fake" on nearly all samples, reflecting the qualitative gap between GAN-based synthesis in the training corpora and the higher-fidelity blending techniques in Celeb-DF-v2. Multi-source domain training is necessary but not sufficient for generalisation across qualitatively different synthesis pipelines.
+**On detection:** The cross-dataset evaluation on Celeb-DF-v2 returns AUC = 0.5415 which is effectively near-random. The model predominantly predicts "fake" on nearly all samples, reflecting the qualitative gap between GAN-based synthesis in the training corpora and the higher-fidelity blending techniques in Celeb-DF-v2. Multi-source domain training is necessary but not sufficient for generalisation across qualitatively different synthesis pipelines.
 
 **On protection:** CLIP similarity disruption is not uniform across images. High-contrast subjects on uniform backgrounds (e.g., image `000004` at 0.7921) show higher residual similarity, suggesting that content-adaptive UAP generation would be a meaningful direction for future work. One of 19 evaluation images produced identical BLIP captions before and after UAP application, indicating that the current perturbation budget may be insufficient for certain image types.
 
@@ -346,11 +346,11 @@ We believe reproducibility includes being honest about where a system falls shor
 
 ### Detection: Why Video Swin over a pure CNN?
 
-The ConvNeXt-tiny baseline (Phase 1) validated that spatial artifact detection — looking at individual frames — has a ceiling. Face-swap and reenactment deepfakes increasingly produce per-frame content that is visually clean. The tell is in motion: temporal discontinuities, unnatural blink patterns, micro-expression artifacts that manifest across frame boundaries. A temporal vision transformer with shifted window attention is architecturally suited to catching exactly these cross-frame anomalies.
+The ConvNeXt-tiny baseline (Phase 1) validated that spatial artifact detection looking at individual frames has a ceiling. Face-swap and reenactment deepfakes increasingly produce per-frame content that is visually clean. The tell is in motion: temporal discontinuities, unnatural blink patterns, micro-expression artifacts that manifest across frame boundaries. A temporal vision transformer with shifted window attention is architecturally suited to catching exactly these cross-frame anomalies.
 
 ### Protection: Why DCT over Fernet?
 
-Fernet is a symmetric encryption scheme — robust and cryptographically sound when you control both ends of the channel. The problem is survivability: a Fernet watermark embedded in raw pixel values does not survive JPEG re-encoding, which is how nearly all online video is re-distributed. DCT-domain embedding targets mid-frequency coefficients that JPEG compression specifically preserves (it selectively discards high-frequency components). The 12-fold repetition with majority-vote decoding is the engineering solution that makes frequency-domain embedding robust in practice, not just in theory.
+Fernet is a symmetric encryption scheme which is robust and cryptographically sound when you control both ends of the channel. The problem is survivability: a Fernet watermark embedded in raw pixel values does not survive JPEG re-encoding, which is how nearly all online video is re-distributed. DCT-domain embedding targets mid-frequency coefficients that JPEG compression specifically preserves (it selectively discards high-frequency components). The 12-fold repetition with majority-vote decoding is the engineering solution that makes frequency-domain embedding robust in practice, not just in theory.
 
 ---
 
@@ -362,7 +362,7 @@ If you find this work useful for your research, please cite:
 @article{vidshield2026,
   title     = {A Joint Framework for Video Deepfake Detection and Frame-Level Provenance Protection},
   author    = {Aditya Raj, Sarthak Harade, Jayan Karkera,Dr. Manoj Sabnis, Mohit Ailani},
-  journal   = {IEEE},
+  conference   = {IEEE},
   year      = {2026},
   note      = {Department of Information Technology, Vivekanand Education Society's Institute of Technology, Mumbai}
 }

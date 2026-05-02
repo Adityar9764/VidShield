@@ -380,5 +380,5 @@ The following open-source datasets were used in this work: DFDC (Meta AI), Deepe
 
 
 <div align="center">
-<sub>Built at VESIT Mumbai · Department of Information Technology · 2024–2025</sub>
+<sub>Built at VESIT Mumbai · Department of Information Technology · 2025–2026</sub>
 </div>
